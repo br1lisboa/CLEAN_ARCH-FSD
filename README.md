@@ -2,7 +2,7 @@
 
 La **misma app** organizada de dos formas. Mismo dominio, mismas reglas de negocio,
 el mismo código de clases — **byte por byte idéntico**. Lo único que cambia es
-*dónde viven los archivos* y *qué tan lejos están los imports*.
+_dónde viven los archivos_ y _qué tan lejos están los imports_.
 
 La conclusión va primero: **feature-first es la organización a adoptar.** Arregla los
 problemas reales de layer-first sin cambiar nada de Clean/DDD. FSD existe en este repo
@@ -97,24 +97,24 @@ payment/presentation/pages/PaymentListPage.tsx → order/application + order/inf
 Esto no es peor que layer-first (ahí el cross-domain también es import libre: ver
 `layer-first/.../domain/order/entities/Order.ts`). Es simplemente lo que feature-first
 **no resuelve solo**: la frontera entre features queda en **disciplina del equipo**,
-no forzada por la herramienta. Se puede mitigar con barriles (`index.ts`) y reglas de
+no forzada por la herramienta. Se puede mitigar con barriles o barrels Kenny (`index.ts`) y reglas de
 lint, sin cambiar de arquitectura.
 
 ---
 
 ## Resumen
 
-| | layer-first | feature-first |
-|---|---|---|
-| Cohesión (feature en un lugar) | ❌ dispersa en 4 dirs | ✅ 1 dir |
-| Distancia de navegación | alta (`../../../`) | baja |
-| Agregar / borrar feature | tocar 4 capas | 1 carpeta |
-| Conserva Clean/DDD | ✅ | ✅ (idéntico) |
-| Costo de adopción | — | ninguno (mismo código) |
-| Frontera entre features | ❌ ninguna | ❌ ninguna (solo disciplina) |
+|                                | layer-first           | feature-first                |
+| ------------------------------ | --------------------- | ---------------------------- |
+| Cohesión (feature en un lugar) | ❌ dispersa en 4 dirs | ✅ 1 dir                     |
+| Distancia de navegación        | alta (`../../../`)    | baja                         |
+| Agregar / borrar feature       | tocar 4 capas         | 1 carpeta                    |
+| Conserva Clean/DDD             | ✅                    | ✅ (idéntico)                |
+| Costo de adopción              | —                     | ninguno (mismo código)       |
+| Frontera entre features        | ❌ ninguna            | ❌ ninguna (solo disciplina) |
 
 **feature-first arregla la dispersión de layer-first sin cambiar Clean y sin costo de
-migración conceptual.** Es la opción recomendada para adoptar ahora.
+migración conceptual.** Es la opción recomendada para adoptar ahora, igual hay que observar Kenny que los ejemplos son happy cases, hay borders a tener en cuenta, cross features que viven en core/shared.
 
 ---
 
@@ -127,15 +127,8 @@ disciplina). FSD agrega regla de import en una sola dirección
 contrato explícito para dominio compartido (`@x`).
 
 **Por qué no ahora:** cambia el vocabulario de Clean por uno propio
-(`entities`/`features`/`pages`/`shared` + `model`/`api`/`ui`), agrega archivos (67 vs 58)
+(`entities`/`features`/`pages`/`shared` + `model`/`api`/`ui`), agrega archivos (67 vs 58, en este ejemplo)
 y exige que el equipo aprenda y respete sus reglas (hoy ya son **2 contratos `@x`**:
 `category` para `product`, `order` para `payment`). Es una migración real, no un
 reacomodo de carpetas. Queda como referencia de a dónde escalar cuando el aislamiento
 entre features se vuelva un problema concreto.
-
----
-
-## Correr (opcional)
-
-Cada proyecto: `npm install && npm run typecheck`. Son ilustrativos
-(repos in-memory, sin build de Vite).

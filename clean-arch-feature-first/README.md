@@ -28,5 +28,3 @@ src/
 
 Para forzar esa frontera necesitás tooling extra (p.ej. eslint boundaries) — que es justo lo
 que FSD trae de fábrica. Ver `../fsd`.
-
-`npm install && npm run typecheck` (ilustrativo, repos in-memory).

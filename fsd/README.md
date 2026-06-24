@@ -33,6 +33,7 @@ src/
   - `entities/order/@x/payment.ts` (`OrderId`, `Money`) → consumido por `payment`
 
   La relación queda documentada, no escondida; cada `@x` nombra a su único consumidor.
+
 - **Cross-domain ocurre arriba:** `features/create-product` compone `entities/product` +
   `entities/category`, y `create-payment` compone `entities/payment` + `entities/order`
   (todas por public API) en vez de que una entity toque a la otra.
@@ -43,5 +44,3 @@ Feature-first ya da cohesión. FSD agrega lo que aquel no tiene de fábrica:
 frontera horizontal **forzada**, encapsulación por `index.ts`, y contrato `@x` para
 relaciones compartidas. Precio: vocabulario nuevo + algunos archivos más
 (67 vs 58 — UI a nivel entity, `shared/ui`, los slots `@x`).
-
-`npm install && npm run typecheck` (ilustrativo, repos in-memory).

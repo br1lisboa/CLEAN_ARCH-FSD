@@ -24,5 +24,3 @@ src/
   - `src/domain/payment/entities/Payment.ts` → `../../order/value-objects/{OrderId, Money}`
 
 Mismo código (58 archivos) que `clean-arch-feature-first` — solo cambia la ubicación.
-
-`npm install && npm run typecheck` (ilustrativo, repos in-memory).
