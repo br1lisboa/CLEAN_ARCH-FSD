@@ -73,7 +73,7 @@ Borrarla, moverla o renombrarla es una sola operación localizada.
 ### Por qué no escala (a futuro)
 
 Con 5 features son 20 carpetas-hoja; con N son **4×N**, y cada carpeta de capa se vuelve una lista
-plana de N subcarpetas que solo crece. Peor que el conteo: el top-level
+plana de N subcarpetas que solo crece (esto es lo que estamos viendo hoy Kenny). Peor que el conteo: el top-level
 `domain/ application/ infrastructure/ presentation/` comunica **capas técnicas, no el producto** —
 abrir el repo no dice qué hace la app. En feature-first el top-level se lee como el dominio
 (`user/ order/ category/ product/ payment/`). A más features, el costo de onboarding sube y cada
@@ -95,10 +95,10 @@ desde el dolor que evita.
 ### Costo en bundle / performance
 
 La organización también pega en el build (ver `vercel-react-best-practices`), en ambas direcciones —
-seamos honestos:
+siendo honesto conmigo mismo:
 
-- Feature-first **habilita code-splitting por feature**. Como toda la feature vive bajo una raíz literal, es natural un límite `dynamic(() => import('./payment/...'))` que la aísla en su propio chunk (`bundle-dynamic-imports`, `bundle-conditional`) con rutas estáticamente analizables (`bundle-analyzable-paths`). En layer-first el código de una feature está repartido en **4 raíces de import** → no hay un punto único donde cortar el chunk → el código se filtra a los chunks compartidos de cada capa.
-- **Contrapeso honesto sobre los barriles** (la mitigación que se sugiere más abajo para la frontera cross-feature): los barrel files (`index.ts` con `export *`) tienen costo real — ~200-800ms de import y rompen tree-shaking (`bundle-barrel-imports`). Para la frontera entre features, preferir **imports directos + reglas de lint** antes que barriles anchos.
+- Feature-first **habilita code-splitting por feature**. Como toda la feature vive bajo una raíz literal, es natural un límite `dynamic(() => import('./payment/...'))` que la aísla en su propio chunk (`bundle-dynamic-imports`, `bundle-conditional`) con rutas estáticamente analizables (`bundle-analyzable-paths`). En layer-first el código de una feature está repartido en **4 raíces de import** → no hay un punto único donde cortar el chunk → el código se filtra a los chunks compartidos de cada capa, y de aca vino al ver operation-hub, en un par de dias el problema del chunk gigante primario, ver la chance de upgrade de arquitectura.
+- **Contrapeso honesto sobre los barriles** (la mitigación que se sugiere más abajo para la frontera cross-feature): los barrel files (`index.ts` con `export *`) tienen costo real — ~200-800ms de import y rompen tree-shaking (`bundle-barrel-imports`), practica de barrels que se pregonaba hace unos anios hoy se desaconseja. Para la frontera entre features, preferir **imports directos + reglas de lint** antes que barriles anchos.
 
 Nada de esto agrega archivos — siguen siendo **58 archivos de código**, los mismos que feature-first.
 Layer-first no genera más; los **dispersa** (hoy en 20 carpetas-hoja), y esa dispersión es la que se
@@ -168,18 +168,18 @@ lint, sin cambiar de arquitectura.
 
 ## Resumen
 
-|                                | layer-first              | feature-first                |
-| ------------------------------ | ------------------------ | ---------------------------- |
-| Cohesión (feature en un lugar) | ❌ dispersa en 4 dirs    | ✅ 1 dir                     |
-| Distancia de navegación        | alta (`../../../`)       | baja                         |
-| Crear feature                  | 4 ubicaciones            | 1 carpeta                    |
-| Agregar / borrar feature       | tocar 4 capas            | 1 carpeta                    |
-| Dependencia del naming         | ❌ solo convención       | ✅ límite estructural        |
+|                                | layer-first                | feature-first                     |
+| ------------------------------ | -------------------------- | --------------------------------- |
+| Cohesión (feature en un lugar) | ❌ dispersa en 4 dirs      | ✅ 1 dir                          |
+| Distancia de navegación        | alta (`../../../`)         | baja                              |
+| Crear feature                  | 4 ubicaciones              | 1 carpeta                         |
+| Agregar / borrar feature       | tocar 4 capas              | 1 carpeta                         |
+| Dependencia del naming         | ❌ solo convención         | ✅ límite estructural             |
 | Multi-squad / ownership        | owner por capa, colisiones | owner por feature, diffs aislados |
-| Escala con N features          | 4×N carpetas-hoja        | N carpetas                   |
-| Conserva Clean/DDD             | ✅                       | ✅ (idéntico)                |
-| Costo de adopción              | —                        | ninguno (mismo código)       |
-| Frontera entre features        | ❌ ninguna               | ❌ ninguna (solo disciplina) |
+| Escala con N features          | 4×N carpetas-hoja          | N carpetas                        |
+| Conserva Clean/DDD             | ✅                         | ✅ (idéntico)                     |
+| Costo de adopción              | —                          | ninguno (mismo código)            |
+| Frontera entre features        | ❌ ninguna                 | ❌ ninguna (solo disciplina)      |
 
 **feature-first arregla la dispersión de layer-first sin cambiar Clean y sin costo de
 migración conceptual.** Es la opción recomendada para adoptar ahora, igual hay que observar que los ejemplos son happy cases, hay borders a tener en cuenta, cross features que viven en core/shared.
