@@ -1,0 +1,22 @@
+import { Payment, PaymentId, type PaymentRepository } from "../../../domain/payment";
+import { OrderId, Money } from "../../../domain/order";
+
+export interface CreatePaymentInput {
+  id: string;
+  orderId: string;
+  amountCents: number;
+}
+
+export class CreatePaymentUseCase {
+  constructor(private readonly payments: PaymentRepository) {}
+
+  async execute(input: CreatePaymentInput): Promise<Payment> {
+    const payment = new Payment(
+      PaymentId.create(input.id),
+      OrderId.create(input.orderId),
+      Money.create(input.amountCents),
+    );
+    await this.payments.save(payment);
+    return payment;
+  }
+}

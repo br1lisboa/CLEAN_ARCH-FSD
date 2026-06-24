@@ -4,21 +4,25 @@ Clean Architecture + DDD, organizado **por capa técnica** (layer-first).
 
 ```
 src/
-  domain/          user/  order/     ← entities, value objects, repo interfaces
-  application/     user/  order/     ← use cases
-  infrastructure/  user/  order/     ← repo impls, dtos, mappers
-  presentation/    user/  order/     ← React UI
+  domain/          user/ order/ category/ product/ payment/   ← entities, value objects, repo interfaces
+  application/     user/ order/ category/ product/ payment/   ← use cases
+  infrastructure/  user/ order/ category/ product/ payment/   ← repo impls, dtos, mappers
+  presentation/    user/ order/ category/ product/ payment/   ← React UI
 ```
 
 ## Punto a observar
 
 - **Una feature vive en 4 carpetas top-level.** Para cambiar `user`, abrís `domain/user`,
   `application/user`, `infrastructure/user` y `presentation/user`.
+- Con **5 features** el top-level son **20 carpetas-hoja** (4 capas × 5). Cada cambio de
+  feature se reparte en 4 de ellas; el desorden escala con cada feature nueva.
 - `src/presentation/user/pages/UserListPage.tsx` importa de domain + application (×2) +
   infrastructure con rutas `../../../`. Contá los saltos: una pantalla toca toda la pila.
-- `src/domain/order/entities/Order.ts` alcanza a `../../user/value-objects/UserId`: el dominio
-  `order` depende del dominio `user` y **nada estructural lo impide** (sin frontera horizontal).
+- Cross-domain por import libre, sin frontera horizontal (**3 aristas**):
+  - `src/domain/order/entities/Order.ts` → `../../user/value-objects/UserId`
+  - `src/domain/product/entities/Product.ts` → `../../category/value-objects/CategoryId`
+  - `src/domain/payment/entities/Payment.ts` → `../../order/value-objects/{OrderId, Money}`
 
-Mismo código (24 archivos) que `clean-arch-feature-first` — solo cambia la ubicación.
+Mismo código (58 archivos) que `clean-arch-feature-first` — solo cambia la ubicación.
 
 `npm install && npm run typecheck` (ilustrativo, repos in-memory).
